@@ -5,6 +5,7 @@ import (
 	"pmux/config"
 	"pmux/git"
 
+	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
@@ -34,7 +35,7 @@ var StatusCmd = &cobra.Command{
 			if err != nil {
 				dirtyStr = "Error"
 			} else if dirty {
-				dirtyStr = "Yes"
+				dirtyStr = color.RedString("Yes")
 			}
 
 			var aheadStr = "No"
@@ -42,7 +43,7 @@ var StatusCmd = &cobra.Command{
 			if err != nil {
 				aheadStr = "Error"
 			} else if ahead {
-				aheadStr = "Yes"
+				aheadStr = color.RedString("Yes")
 			}
 
 			var behindStr = "No"
@@ -50,7 +51,7 @@ var StatusCmd = &cobra.Command{
 			if err != nil {
 				behindStr = "Error"
 			} else if behind {
-				behindStr = "Yes"
+				behindStr = color.RedString("Yes")
 			}
 
 			table.Append([]string{k, branch, dirtyStr, aheadStr, behindStr})
