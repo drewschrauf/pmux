@@ -6,11 +6,13 @@ import (
 	"os"
 	"os/exec"
 	"pmux/config"
-	"strings"
 	"sync"
 
 	"github.com/fatih/color"
+	shellwords "github.com/mattn/go-shellwords"
 	"github.com/spf13/cobra"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func init() {
@@ -39,9 +41,14 @@ var RunCmd = &cobra.Command{
 		for projectName, project := range cfg.Projects {
 			command, ok := project.Commands[commandName]
 			if ok {
+				dir, err := homedir.Expand(project.Dir)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Couldn't expand project path", err)
+					os.Exit(1)
+				}
 				commands = append(commands, Command{
 					project: projectName,
-					dir:     project.Dir,
+					dir:     dir,
 					cmd:     command,
 				})
 			}
@@ -58,7 +65,11 @@ var RunCmd = &cobra.Command{
 
 func run(command Command, colorize colorFunc, wg *sync.WaitGroup) {
 	defer wg.Done()
-	parts := strings.Fields(command.cmd)
+	parts, err := shellwords.Parse(command.cmd)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Couldn't parse command", err)
+		os.Exit(1)
+	}
 	cmd := exec.Command(parts[0], parts[1:]...)
 	cmd.Dir = command.dir
 

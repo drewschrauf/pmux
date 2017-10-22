@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"pmux/config"
 	"pmux/git"
@@ -8,6 +9,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func init() {
@@ -25,13 +28,19 @@ var StatusCmd = &cobra.Command{
 		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})
 
 		for k, v := range cfg.Projects {
-			branch, err := git.Branch(v.Dir)
+			dir, err := homedir.Expand(v.Dir)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Couldn't expand project path", err)
+				os.Exit(1)
+			}
+
+			branch, err := git.Branch(dir)
 			if err != nil {
 				branch = "Error"
 			}
 
 			var dirtyStr = "No"
-			dirty, err := git.Dirty(v.Dir)
+			dirty, err := git.Dirty(dir)
 			if err != nil {
 				dirtyStr = color.RedString("Error")
 			} else if dirty {
@@ -39,7 +48,7 @@ var StatusCmd = &cobra.Command{
 			}
 
 			var aheadStr = "No"
-			ahead, err := git.Ahead(v.Dir)
+			ahead, err := git.Ahead(dir)
 			if err != nil {
 				aheadStr = color.RedString("Error")
 			} else if ahead {
@@ -47,7 +56,7 @@ var StatusCmd = &cobra.Command{
 			}
 
 			var behindStr = "No"
-			behind, err := git.Behind(v.Dir)
+			behind, err := git.Behind(dir)
 			if err != nil {
 				behindStr = color.RedString("Error")
 			} else if behind {
