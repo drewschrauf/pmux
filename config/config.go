@@ -14,13 +14,12 @@ import (
 // Config Workspace config
 type Config struct {
 	// Projects Projects available in the workspace
-	Projects projects `yaml:projects`
+	Projects map[string]Project `yaml:projects`
 }
 
-type projects map[string]Project
-
 type Project struct {
-	Dir string `yaml:dir`
+	Dir      string            `yaml:dir`
+	Commands map[string]string `yaml:commands`
 }
 
 // Load Load the default config

@@ -33,7 +33,7 @@ var StatusCmd = &cobra.Command{
 			var dirtyStr = "No"
 			dirty, err := git.Dirty(v.Dir)
 			if err != nil {
-				dirtyStr = "Error"
+				dirtyStr = color.RedString("Error")
 			} else if dirty {
 				dirtyStr = color.RedString("Yes")
 			}
@@ -41,7 +41,7 @@ var StatusCmd = &cobra.Command{
 			var aheadStr = "No"
 			ahead, err := git.Ahead(v.Dir)
 			if err != nil {
-				aheadStr = "Error"
+				aheadStr = color.RedString("Error")
 			} else if ahead {
 				aheadStr = color.RedString("Yes")
 			}
@@ -49,7 +49,7 @@ var StatusCmd = &cobra.Command{
 			var behindStr = "No"
 			behind, err := git.Behind(v.Dir)
 			if err != nil {
-				behindStr = "Error"
+				behindStr = color.RedString("Error")
 			} else if behind {
 				behindStr = color.RedString("Yes")
 			}
