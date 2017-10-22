@@ -93,7 +93,7 @@ func run(command Command, colorize colorFunc, wg *sync.WaitGroup) {
 	errScanner := bufio.NewScanner(cmdErrReader)
 	go func() {
 		for errScanner.Scan() {
-			fmt.Fprintf(os.Stderr, "%v - %v\n", colorize(command.project), outScanner.Text())
+			fmt.Fprintf(os.Stderr, "%v - %v\n", colorize(command.project), errScanner.Text())
 		}
 	}()
 
