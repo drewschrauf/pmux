@@ -5,6 +5,7 @@ import (
 	"os"
 	"pmux/config"
 	"pmux/git"
+	"sync"
 
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
@@ -27,45 +28,53 @@ var StatusCmd = &cobra.Command{
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})
 
-		for k, v := range cfg.Projects {
-			dir, err := homedir.Expand(v.Dir)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Couldn't expand project path", err)
-				os.Exit(1)
-			}
+		var wg sync.WaitGroup
+		wg.Add(len(cfg.Projects))
 
-			branch, err := git.Branch(dir)
-			if err != nil {
-				branch = "Error"
-			}
+		for projectName, project := range cfg.Projects {
+			go func(projectName string, project config.Project) {
+				defer wg.Done()
 
-			var dirtyStr = "No"
-			dirty, err := git.Dirty(dir)
-			if err != nil {
-				dirtyStr = color.RedString("Error")
-			} else if dirty {
-				dirtyStr = color.RedString("Yes")
-			}
+				dir, err := homedir.Expand(project.Dir)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Couldn't expand project path", err)
+					os.Exit(1)
+				}
 
-			var aheadStr = "No"
-			ahead, err := git.Ahead(dir)
-			if err != nil {
-				aheadStr = color.RedString("Error")
-			} else if ahead {
-				aheadStr = color.RedString("Yes")
-			}
+				branch, err := git.Branch(dir)
+				if err != nil {
+					branch = "Error"
+				}
 
-			var behindStr = "No"
-			behind, err := git.Behind(dir)
-			if err != nil {
-				behindStr = color.RedString("Error")
-			} else if behind {
-				behindStr = color.RedString("Yes")
-			}
+				var dirtyStr = "No"
+				dirty, err := git.Dirty(dir)
+				if err != nil {
+					dirtyStr = color.RedString("Error")
+				} else if dirty {
+					dirtyStr = color.RedString("Yes")
+				}
 
-			table.Append([]string{k, branch, dirtyStr, aheadStr, behindStr})
+				var aheadStr = "No"
+				ahead, err := git.Ahead(dir)
+				if err != nil {
+					aheadStr = color.RedString("Error")
+				} else if ahead {
+					aheadStr = color.RedString("Yes")
+				}
+
+				var behindStr = "No"
+				behind, err := git.Behind(dir)
+				if err != nil {
+					behindStr = color.RedString("Error")
+				} else if behind {
+					behindStr = color.RedString("Yes")
+				}
+
+				table.Append([]string{projectName, branch, dirtyStr, aheadStr, behindStr})
+			}(projectName, project)
 		}
 
+		wg.Wait()
 		table.Render()
 	},
 }

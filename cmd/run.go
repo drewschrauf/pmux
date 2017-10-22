@@ -22,7 +22,7 @@ func init() {
 type Command struct {
 	project string
 	dir     string
-	cmd     string
+	script  string
 }
 
 type colorFunc func(format string, a ...interface{}) string
@@ -49,7 +49,7 @@ var RunCmd = &cobra.Command{
 				commands = append(commands, Command{
 					project: projectName,
 					dir:     dir,
-					cmd:     command,
+					script:  command.Script,
 				})
 			}
 		}
@@ -65,7 +65,7 @@ var RunCmd = &cobra.Command{
 
 func run(command Command, colorize colorFunc, wg *sync.WaitGroup) {
 	defer wg.Done()
-	parts, err := shellwords.Parse(command.cmd)
+	parts, err := shellwords.Parse(command.script)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Couldn't parse command", err)
 		os.Exit(1)
@@ -73,16 +73,27 @@ func run(command Command, colorize colorFunc, wg *sync.WaitGroup) {
 	cmd := exec.Command(parts[0], parts[1:]...)
 	cmd.Dir = command.dir
 
-	cmdReader, err := cmd.StdoutPipe()
+	cmdOutReader, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error creating StdoutPipe", err)
 		os.Exit(1)
 	}
-
-	scanner := bufio.NewScanner(cmdReader)
+	outScanner := bufio.NewScanner(cmdOutReader)
 	go func() {
-		for scanner.Scan() {
-			fmt.Printf("%v - %v\n", colorize(command.project), scanner.Text())
+		for outScanner.Scan() {
+			fmt.Printf("%v - %v\n", colorize(command.project), outScanner.Text())
+		}
+	}()
+
+	cmdErrReader, err := cmd.StderrPipe()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error creating StdoutPipe", err)
+		os.Exit(1)
+	}
+	errScanner := bufio.NewScanner(cmdErrReader)
+	go func() {
+		for errScanner.Scan() {
+			fmt.Fprintf(os.Stderr, "%v - %v\n", colorize(command.project), outScanner.Text())
 		}
 	}()
 
