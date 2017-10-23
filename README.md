@@ -52,3 +52,12 @@ projects:
           - foo
           - bar
 ```
+
+## Install
+
+Ensure [Glide](https://github.com/Masterminds/glide) is installed and run:
+
+```sh
+> glide install
+> go install
+```
