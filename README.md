@@ -55,7 +55,7 @@ projects:
 
 ## Install
 
-Ensure [Glide](https://github.com/Masterminds/glide) is installed and run:
+Checkout the project to `$GOPATH/src`, ensure [Glide](https://github.com/Masterminds/glide) is installed and run:
 
 ```sh
 > glide install
