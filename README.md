@@ -1,4 +1,4 @@
-> This project is in alpha
+**WARNING:** This project is in alpha
 
 # pmux
 
