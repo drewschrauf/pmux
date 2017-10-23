@@ -12,7 +12,10 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
+var skipRequires bool
+
 func init() {
+	runCmd.Flags().BoolVarP(&skipRequires, "skip-requires", "s", false, "Don't enforce requires")
 	RootCmd.AddCommand(runCmd)
 }
 
@@ -43,7 +46,13 @@ var runCmd = &cobra.Command{
 			}
 		}
 
-		cmdGroups := buildCmdGroups(commands)
+		var cmdGroups [][]util.Cmd
+		if skipRequires {
+			cmdGroups = append(cmdGroups, commands)
+		} else {
+			cmdGroups = buildCmdGroups(commands)
+		}
+
 		for _, group := range cmdGroups {
 			var wg sync.WaitGroup
 			wg.Add(len(group))
