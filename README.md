@@ -1,6 +1,6 @@
-# pmux
-
 > This project is in alpha
+
+# pmux
 
 `pmux` is a utility for working with complex stacks spanning multiple repositories and technologies.
 
