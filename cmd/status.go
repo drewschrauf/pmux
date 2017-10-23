@@ -23,7 +23,7 @@ var statusCmd = &cobra.Command{
 	Short: "Display git status of all projects in workspace",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg := config.Load()
+		cfg := config.Load(Workspace)
 
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})

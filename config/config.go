@@ -29,22 +29,17 @@ type Command struct {
 }
 
 // Load : Load the config
-func Load() Config {
+func Load(workspace string) Config {
 	dir, err := homedir.Expand("~/.pmux")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to locate config directory")
 		os.Exit(1)
 	}
 
-	project := os.Getenv("PMUX_WORKSPACE")
-	if project == "" {
-		project = "default"
-	}
-
-	cfgPath := path.Join(dir, fmt.Sprintf("%v.yml", project))
+	cfgPath := path.Join(dir, fmt.Sprintf("%v.yml", workspace))
 	data, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to find config for workspace '%v'\n", project)
+		fmt.Fprintf(os.Stderr, "Unable to find config for workspace '%v'\n", workspace)
 		os.Exit(1)
 	}
 

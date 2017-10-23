@@ -24,7 +24,7 @@ var runCmd = &cobra.Command{
 	Short: "Run a command against all projects in workspace",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg := config.Load()
+		cfg := config.Load(Workspace)
 		commandName := args[0]
 		var commands []util.Cmd
 
