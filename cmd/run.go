@@ -13,14 +13,16 @@ import (
 )
 
 var skipRequires bool
+var force bool
 
 func init() {
 	runCmd.Flags().BoolVarP(&skipRequires, "skip-requires", "s", false, "Don't enforce requires")
+	runCmd.Flags().BoolVarP(&force, "force", "f", false, "Continue on errors")
 	RootCmd.AddCommand(runCmd)
 }
 
 var runCmd = &cobra.Command{
-	Use:   "run",
+	Use:   "run [command]",
 	Short: "Run a command against all projects in workspace",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -73,8 +75,11 @@ var runCmd = &cobra.Command{
 				go func(cmd util.Cmd) {
 					err := util.Run(cmd)
 					if err != nil {
-						fmt.Fprintf(os.Stderr, "Error running command for '%v'", cmd.Project)
-						os.Exit(1)
+						fmt.Fprintf(os.Stderr, "Error running command for '%v'\n", cmd.Project)
+						if !force {
+							fmt.Fprintf(os.Stderr, "Exiting. Use flag --force to ignore.\n")
+							os.Exit(1)
+						}
 					}
 					wg.Done()
 				}(cmd)
