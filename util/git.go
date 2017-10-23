@@ -1,4 +1,4 @@
-package git
+package util
 
 import (
 	"os/exec"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Branch(dir string) (string, error) {
+func GitBranch(dir string) (string, error) {
 	cmd := exec.Command("git", "symbolic-ref", "--quiet", "HEAD")
 	cmd.Dir = dir
 	out, err := cmd.Output()
@@ -19,8 +19,8 @@ func Branch(dir string) (string, error) {
 	}
 }
 
-func Ahead(dir string) (bool, error) {
-	branch, err := Branch(dir)
+func GitAhead(dir string) (bool, error) {
+	branch, err := GitBranch(dir)
 	if err != nil {
 		return false, err
 	}
@@ -34,8 +34,8 @@ func Ahead(dir string) (bool, error) {
 	return revs != "", nil
 }
 
-func Behind(dir string) (bool, error) {
-	branch, err := Branch(dir)
+func GitBehind(dir string) (bool, error) {
+	branch, err := GitBranch(dir)
 	if err != nil {
 		return false, err
 	}
@@ -57,7 +57,7 @@ func Behind(dir string) (bool, error) {
 	return revs != "", nil
 }
 
-func Dirty(dir string) (bool, error) {
+func GitDirty(dir string) (bool, error) {
 	cmd := exec.Command("git", "status", "--porcelain")
 	cmd.Dir = dir
 	out, err := cmd.Output()

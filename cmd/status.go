@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"pmux/config"
-	"pmux/git"
+	"pmux/util"
 	"sync"
 
 	"github.com/fatih/color"
@@ -41,13 +41,13 @@ var StatusCmd = &cobra.Command{
 					os.Exit(1)
 				}
 
-				branch, err := git.Branch(dir)
+				branch, err := util.GitBranch(dir)
 				if err != nil {
 					branch = "Error"
 				}
 
 				var dirtyStr = "No"
-				dirty, err := git.Dirty(dir)
+				dirty, err := util.GitDirty(dir)
 				if err != nil {
 					dirtyStr = color.RedString("Error")
 				} else if dirty {
@@ -55,7 +55,7 @@ var StatusCmd = &cobra.Command{
 				}
 
 				var aheadStr = "No"
-				ahead, err := git.Ahead(dir)
+				ahead, err := util.GitAhead(dir)
 				if err != nil {
 					aheadStr = color.RedString("Error")
 				} else if ahead {
@@ -63,7 +63,7 @@ var StatusCmd = &cobra.Command{
 				}
 
 				var behindStr = "No"
-				behind, err := git.Behind(dir)
+				behind, err := util.GitBehind(dir)
 				if err != nil {
 					behindStr = color.RedString("Error")
 				} else if behind {
