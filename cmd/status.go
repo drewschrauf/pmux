@@ -15,10 +15,10 @@ import (
 )
 
 func init() {
-	RootCmd.AddCommand(StatusCmd)
+	RootCmd.AddCommand(statusCmd)
 }
 
-var StatusCmd = &cobra.Command{
+var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Display git status of all projects in workspace",
 	Args:  cobra.NoArgs,

@@ -13,10 +13,10 @@ import (
 )
 
 func init() {
-	RootCmd.AddCommand(RunCmd)
+	RootCmd.AddCommand(runCmd)
 }
 
-var RunCmd = &cobra.Command{
+var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run a command against all projects in workspace",
 	Args:  cobra.ExactArgs(1),
@@ -34,21 +34,71 @@ var RunCmd = &cobra.Command{
 					os.Exit(1)
 				}
 				commands = append(commands, util.Cmd{
-					Project: projectName,
-					Dir:     dir,
-					Script:  command.Script,
+					Project:  projectName,
+					Dir:      dir,
+					Script:   command.Script,
+					Requires: command.Requires,
+					Colorize: util.Colors[len(commands)%len(util.Colors)],
 				})
 			}
 		}
 
-		var wg sync.WaitGroup
-		wg.Add(len(commands))
-		for i, cmd := range commands {
-			go func(cmd util.Cmd, colorize util.ColorFunc) {
-				util.Run(cmd, colorize)
-				wg.Done()
-			}(cmd, util.Colors[i%len(util.Colors)])
+		cmdGroups := buildCmdGroups(commands)
+		for _, group := range cmdGroups {
+			var wg sync.WaitGroup
+			wg.Add(len(group))
+
+			for _, cmd := range group {
+				go func(cmd util.Cmd) {
+					err := util.Run(cmd)
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "Error running command for '%v'", cmd.Project)
+						os.Exit(1)
+					}
+					wg.Done()
+				}(cmd)
+			}
+
+			wg.Wait()
 		}
-		wg.Wait()
 	},
+}
+
+func buildCmdGroups(commands []util.Cmd) [][]util.Cmd {
+	var processed []string
+	var groups [][]util.Cmd
+
+	for len(processed) < len(commands) {
+		var group []util.Cmd
+		var thisProcessed []string
+		for _, cmd := range commands {
+			if !contains(processed, cmd.Project) && containsAll(processed, cmd.Requires) {
+				group = append(group, cmd)
+				thisProcessed = append(thisProcessed, cmd.Project)
+			}
+		}
+		processed = append(processed, thisProcessed...)
+		groups = append(groups, group)
+	}
+
+	return groups
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func containsAll(set []string, subset []string) bool {
+	var found []string
+	for _, e := range subset {
+		if contains(set, e) {
+			found = append(found, e)
+		}
+	}
+	return len(found) == len(subset)
 }

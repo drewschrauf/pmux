@@ -24,8 +24,8 @@ type Project struct {
 
 // Command : Command config
 type Command struct {
-	Script  string   `yaml:"script"`
-	Depends []string `yaml:"depends"`
+	Script   string   `yaml:"script"`
+	Requires []string `yaml:"requires"`
 }
 
 // Load : Load the config
