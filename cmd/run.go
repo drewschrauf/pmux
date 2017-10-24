@@ -3,9 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"pmux/config"
-	"pmux/util"
 	"sync"
+
+	"github.com/drewschrauf/pmux/config"
+	"github.com/drewschrauf/pmux/util"
 
 	"github.com/spf13/cobra"
 

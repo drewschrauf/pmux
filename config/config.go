@@ -5,7 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"pmux/util"
+
+	"github.com/drewschrauf/pmux/util"
 
 	yaml "gopkg.in/yaml.v2"
 

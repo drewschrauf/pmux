@@ -1,9 +1,9 @@
 package pmux_test
 
 import (
-	"pmux/config"
 	"testing"
 
+	"github.com/drewschrauf/pmux/config"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,6 +1,6 @@
 **WARNING:** This project is in alpha
 
-# pmux
+# pmux [![Build Status](https://travis-ci.org/drewschrauf/pmux.svg?branch=master)](https://travis-ci.org/drewschrauf/pmux)
 
 `pmux` is a utility for working with complex stacks spanning multiple repositories and technologies.
 

@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"pmux/cmd"
+
+	"github.com/drewschrauf/pmux/cmd"
 )
 
 func main() {
