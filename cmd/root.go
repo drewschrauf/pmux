@@ -8,14 +8,16 @@ import (
 
 var Workspace string
 var Project string
+var Projects []string
 
 func init() {
 	workspace := os.Getenv("PMUX_WORKSPACE")
 	if workspace == "" {
 		workspace = "default"
 	}
-	RootCmd.PersistentFlags().StringVarP(&Workspace, "workspace", "w", workspace, "Set workspace to use")
-	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", "", "Run command against single project")
+	RootCmd.PersistentFlags().StringVarP(&Workspace, "workspace", "w", workspace, "set workspace to use")
+	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", "", "run command against single project")
+	RootCmd.PersistentFlags().StringArrayVarP(&Projects, "projects", "m", []string{}, "run command against multiple project")
 }
 
 var RootCmd = &cobra.Command{

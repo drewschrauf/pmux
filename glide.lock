@@ -1,5 +1,5 @@
-hash: 0304b7d809c2f9a6bb75c4e71bd40f9729e0eb00eabf0d1eecf1cee7e0d37b57
-updated: 2017-10-22T13:17:39.36228009+11:00
+hash: dba6b211c64d846d23124aa66d5e512c5c4dce2e1b0a1237065cf8dba0d9a801
+updated: 2017-10-24T19:54:09.3944916+11:00
 imports:
 - name: github.com/fatih/color
   version: 570b54cabe6b8eb0bc2dfce68d964677d63b5260
@@ -30,4 +30,6 @@ imports:
   - unix
 - name: gopkg.in/yaml.v2
   version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
-testImports: []
+testImports:
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0

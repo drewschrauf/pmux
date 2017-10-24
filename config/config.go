@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"pmux/util"
 
 	yaml "gopkg.in/yaml.v2"
 
@@ -29,7 +30,7 @@ type Command struct {
 }
 
 // Load : Load the config
-func Load(workspace string) Config {
+func Load(workspace string) *Config {
 	dir, err := homedir.Expand("~/.pmux")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to locate config directory")
@@ -43,8 +44,24 @@ func Load(workspace string) Config {
 		os.Exit(1)
 	}
 
-	cfg := Config{}
+	cfg := &Config{}
 	yaml.Unmarshal(data, &cfg)
 
 	return cfg
+}
+
+func (config *Config) Filter(project string, projects []string) {
+	if project == "" && len(projects) == 0 {
+		return
+	}
+
+	if project != "" {
+		projects = append(projects, []string{project}...)
+	}
+
+	for name := range config.Projects {
+		if !util.ArrayContains(projects, name) {
+			delete(config.Projects, name)
+		}
+	}
 }

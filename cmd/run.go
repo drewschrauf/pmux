@@ -16,8 +16,8 @@ var skipRequires bool
 var force bool
 
 func init() {
-	runCmd.Flags().BoolVarP(&skipRequires, "skip-requires", "s", false, "Don't enforce requires")
-	runCmd.Flags().BoolVarP(&force, "force", "f", false, "Continue on errors")
+	runCmd.Flags().BoolVarP(&skipRequires, "skip-requires", "s", false, "don't enforce requires")
+	runCmd.Flags().BoolVarP(&force, "force", "f", false, "continue on errors")
 	RootCmd.AddCommand(runCmd)
 }
 
@@ -98,7 +98,7 @@ func buildCmdGroups(commands []util.Cmd) [][]util.Cmd {
 		var group []util.Cmd
 		var thisProcessed []string
 		for _, cmd := range commands {
-			if !contains(processed, cmd.Project) && containsAll(processed, cmd.Requires) {
+			if !util.ArrayContains(processed, cmd.Project) && util.ArrayContainsAll(processed, cmd.Requires) {
 				group = append(group, cmd)
 				thisProcessed = append(thisProcessed, cmd.Project)
 			}
@@ -108,23 +108,4 @@ func buildCmdGroups(commands []util.Cmd) [][]util.Cmd {
 	}
 
 	return groups
-}
-
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-func containsAll(set []string, subset []string) bool {
-	var found []string
-	for _, e := range subset {
-		if contains(set, e) {
-			found = append(found, e)
-		}
-	}
-	return len(found) == len(subset)
 }
