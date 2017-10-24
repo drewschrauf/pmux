@@ -24,26 +24,15 @@ var statusCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.Load(Workspace)
+		cfg.Filter(Project, Projects)
 
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})
 
-		Projects := make(map[string]config.Project)
-		if Project != "" {
-			project, ok := cfg.Projects[Project]
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Project '%v' doesn't exist in workspace\n", Project)
-				os.Exit(1)
-			}
-			Projects[Project] = project
-		} else {
-			Projects = cfg.Projects
-		}
-
 		var wg sync.WaitGroup
 		wg.Add(len(Projects))
 
-		for projectName, project := range Projects {
+		for projectName, project := range cfg.Projects {
 			go func(projectName string, project config.Project) {
 				defer wg.Done()
 

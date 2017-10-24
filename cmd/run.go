@@ -27,22 +27,12 @@ var runCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.Load(Workspace)
+		cfg.Filter(Project, Projects)
+
 		commandName := args[0]
 		var commands []util.Cmd
 
-		Projects := make(map[string]config.Project)
-		if Project != "" {
-			project, ok := cfg.Projects[Project]
-			if !ok {
-				fmt.Fprintf(os.Stderr, "Project '%v' doesn't exist in workspace\n", Project)
-				os.Exit(1)
-			}
-			Projects[Project] = project
-		} else {
-			Projects = cfg.Projects
-		}
-
-		for projectName, project := range Projects {
+		for projectName, project := range cfg.Projects {
 			command, ok := project.Commands[commandName]
 			if ok {
 				dir, err := homedir.Expand(project.Dir)
