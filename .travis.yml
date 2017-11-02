@@ -3,10 +3,6 @@ language: go
 go:
   - stable
 
-install:
-  - go get github.com/Masterminds/glide
-  - glide install
-
 script:
   - go test ./tests
   - go build
