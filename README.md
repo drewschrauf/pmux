@@ -55,9 +55,8 @@ projects:
 
 ## Install
 
-Checkout the project to `$GOPATH/src`, ensure [Glide](https://github.com/Masterminds/glide) is installed and run:
+Simply get it with `go get`:
 
-```sh
-> glide install
-> go install
+```
+go get -u github.com/drewschrauf/pmux
 ```
