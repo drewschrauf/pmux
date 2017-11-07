@@ -4,5 +4,6 @@ go:
   - stable
 
 script:
+  - go lint ./...
   - go test ./tests
   - go build

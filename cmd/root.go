@@ -6,8 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Workspace : Workspace to use
 var Workspace string
+
+// Project : Project to use
 var Project string
+
+// Projects : Projects to use
 var Projects []string
 
 func init() {
@@ -20,6 +25,7 @@ func init() {
 	RootCmd.PersistentFlags().StringArrayVarP(&Projects, "projects", "m", []string{}, "run command against multiple project")
 }
 
+// RootCmd : Cobra root command
 var RootCmd = &cobra.Command{
 	Use:   "pmux",
 	Short: "pmux is a manager for projects spread across multiple repositories",

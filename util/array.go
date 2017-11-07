@@ -1,5 +1,6 @@
 package util
 
+// ArrayContains : Check if slice contains element
 func ArrayContains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -9,6 +10,7 @@ func ArrayContains(s []string, e string) bool {
 	return false
 }
 
+// ArrayContainsAll : Check if slace contins all elements
 func ArrayContainsAll(set []string, subset []string) bool {
 	var found []string
 	for _, e := range subset {

@@ -10,6 +10,7 @@ import (
 	shellwords "github.com/mattn/go-shellwords"
 )
 
+// Cmd : Settings to run command
 type Cmd struct {
 	Project  string
 	Dir      string
@@ -18,10 +19,13 @@ type Cmd struct {
 	Colorize ColorFunc
 }
 
+// ColorFunc : Function to colorize output
 type ColorFunc func(format string, a ...interface{}) string
 
+// Colors : Static list of available output colors
 var Colors = [...]ColorFunc{color.BlueString, color.YellowString, color.MagentaString, color.CyanString, color.GreenString, color.RedString}
 
+// Run : Run a command
 func Run(command Cmd) error {
 	parts, err := shellwords.Parse(command.Script)
 	if err != nil {

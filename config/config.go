@@ -51,6 +51,7 @@ func Load(workspace string) *Config {
 	return cfg
 }
 
+// Filter : Remove projects not passed to command as flags
 func (config *Config) Filter(project string, projects []string) {
 	if project == "" && len(projects) == 0 {
 		return
