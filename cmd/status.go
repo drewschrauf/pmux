@@ -15,7 +15,7 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-type Status struct {
+type status struct {
 	Project string
 	Branch  string
 	Dirty   string
@@ -51,7 +51,7 @@ var statusCmd = &cobra.Command{
 		var wg sync.WaitGroup
 		wg.Add(len(cfg.Projects))
 
-		var statuses []Status
+		var statuses []status
 		for projectName, project := range cfg.Projects {
 			go func(projectName string, project config.Project) {
 				defer wg.Done()
@@ -71,7 +71,7 @@ var statusCmd = &cobra.Command{
 				var ahead = runGitFlagCmd(util.GitAhead, dir)
 				var behind = runGitFlagCmd(util.GitBehind, dir)
 
-				statuses = append(statuses, Status{
+				statuses = append(statuses, status{
 					Project: projectName,
 					Branch:  branch,
 					Dirty:   dirty,
