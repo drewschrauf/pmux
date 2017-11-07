@@ -4,6 +4,7 @@ go:
   - stable
 
 before_install:
+  - go get
   - go get github.com/golang/lint/golint
   - go get github.com/AlekSi/gocoverutil
 
