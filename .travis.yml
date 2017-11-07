@@ -3,6 +3,9 @@ language: go
 go:
   - stable
 
+before_install:
+  - go get github.com/golang/lint/golint
+
 script:
   - golint ./...
   - go test ./tests
