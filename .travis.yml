@@ -3,10 +3,12 @@ language: go
 go:
   - stable
 
-before_install:
+install:
+  - go get -t -v -d ./...
   - go get github.com/golang/lint/golint
+  - go get github.com/AlekSi/gocoverutil
 
 script:
-  - golint ./...
-  - go test ./tests
-  - go build
+  - make lint
+  - make test
+  - make
