@@ -1,19 +1,9 @@
-.PHONY: install install-test
-
-default: install
+default:
 	go build
 
-install:
-	go get -v ./...
-
-install-test:
-	go get -t -v ./...
-	go get github.com/golang/lint/golint
-	go get github.com/AlekSi/gocoverutil
-
-lint: install-test
+lint:
 	golint ./...
 
-test: install-test
+test:
 	gocoverutil -coverprofile=cover.out test -v -covermode=count ./...
 	go tool cover -html=cover.out -o coverage.html
