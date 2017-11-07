@@ -27,6 +27,19 @@ func init() {
 	RootCmd.AddCommand(statusCmd)
 }
 
+type gitFlagCmd func(dir string) (bool, error)
+
+func runGitFlagCmd(cmd gitFlagCmd, dir string) string {
+	var resultStr = "No"
+	dirty, err := cmd(dir)
+	if err != nil {
+		resultStr = color.RedString("Error")
+	} else if dirty {
+		resultStr = color.RedString("Yes")
+	}
+	return resultStr
+}
+
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Display git status of all projects in workspace",
@@ -54,36 +67,16 @@ var statusCmd = &cobra.Command{
 					branch = "Error"
 				}
 
-				var dirtyStr = "No"
-				dirty, err := util.GitDirty(dir)
-				if err != nil {
-					dirtyStr = color.RedString("Error")
-				} else if dirty {
-					dirtyStr = color.RedString("Yes")
-				}
-
-				var aheadStr = "No"
-				ahead, err := util.GitAhead(dir)
-				if err != nil {
-					aheadStr = color.RedString("Error")
-				} else if ahead {
-					aheadStr = color.RedString("Yes")
-				}
-
-				var behindStr = "No"
-				behind, err := util.GitBehind(dir)
-				if err != nil {
-					behindStr = color.RedString("Error")
-				} else if behind {
-					behindStr = color.RedString("Yes")
-				}
+				var dirty = runGitFlagCmd(util.GitDirty, dir)
+				var ahead = runGitFlagCmd(util.GitAhead, dir)
+				var behind = runGitFlagCmd(util.GitBehind, dir)
 
 				statuses = append(statuses, Status{
 					Project: projectName,
 					Branch:  branch,
-					Dirty:   dirtyStr,
-					Ahead:   aheadStr,
-					Behind:  behindStr,
+					Dirty:   dirty,
+					Ahead:   ahead,
+					Behind:  behind,
 				})
 			}(projectName, project)
 		}
