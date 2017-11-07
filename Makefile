@@ -6,7 +6,7 @@ default: install
 install:
 	go get -v ./...
 
-install-tests:
+install-test:
 	go get -t -v ./...
 	go get github.com/golang/lint/golint
 	go get github.com/AlekSi/gocoverutil
