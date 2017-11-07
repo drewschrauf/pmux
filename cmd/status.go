@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 	"sync"
 
 	"github.com/drewschrauf/pmux/config"
@@ -13,6 +14,14 @@ import (
 
 	homedir "github.com/mitchellh/go-homedir"
 )
+
+type Status struct {
+	Project string
+	Branch  string
+	Dirty   string
+	Ahead   string
+	Behind  string
+}
 
 func init() {
 	RootCmd.AddCommand(statusCmd)
@@ -26,12 +35,10 @@ var statusCmd = &cobra.Command{
 		cfg := config.Load(Workspace)
 		cfg.Filter(Project, Projects)
 
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})
-
 		var wg sync.WaitGroup
-		wg.Add(len(Projects))
+		wg.Add(len(cfg.Projects))
 
+		var statuses []Status
 		for projectName, project := range cfg.Projects {
 			go func(projectName string, project config.Project) {
 				defer wg.Done()
@@ -71,11 +78,29 @@ var statusCmd = &cobra.Command{
 					behindStr = color.RedString("Yes")
 				}
 
-				table.Append([]string{projectName, branch, dirtyStr, aheadStr, behindStr})
+				statuses = append(statuses, Status{
+					Project: projectName,
+					Branch:  branch,
+					Dirty:   dirtyStr,
+					Ahead:   aheadStr,
+					Behind:  behindStr,
+				})
 			}(projectName, project)
 		}
-
 		wg.Wait()
+
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"Project", "Branch", "Dirty", "Ahead", "Behind"})
+
+		sort.Slice(statuses, func(i, j int) bool {
+			return statuses[i].Project < statuses[j].Project
+		})
+		for _, status := range statuses {
+			table.Append([]string{
+				status.Project, status.Branch, status.Dirty, status.Ahead, status.Behind,
+			})
+		}
+
 		table.Render()
 	},
 }
