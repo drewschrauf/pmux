@@ -5,8 +5,9 @@ go:
 
 before_install:
   - go get github.com/golang/lint/golint
+  - go get github.com/AlekSi/gocoverutil
 
 script:
-  - golint ./...
-  - go test ./tests
-  - go build
+  - make lint
+  - make test
+  - make
