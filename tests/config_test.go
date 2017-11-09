@@ -1,4 +1,4 @@
-package config_test
+package pmux_test
 
 import (
 	"testing"
