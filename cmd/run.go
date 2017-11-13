@@ -24,7 +24,7 @@ func init() {
 
 var runCmd = &cobra.Command{
 	Use:   "run [command]",
-	Short: "Run a command against all projects in workspace",
+	Short: "Run a configured command against all projects in workspace",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.Load(Workspace)

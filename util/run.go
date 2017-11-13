@@ -27,6 +27,7 @@ var Colors = [...]ColorFunc{color.BlueString, color.YellowString, color.MagentaS
 
 // Run : Run a command
 func Run(command Cmd) error {
+	stop := make(chan bool)
 	parts, err := shellwords.Parse(command.Script)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Couldn't parse command", err)
@@ -45,6 +46,7 @@ func Run(command Cmd) error {
 		for outScanner.Scan() {
 			fmt.Printf("%v - %v\n", command.Colorize(command.Project), outScanner.Text())
 		}
+		stop <- true
 	}()
 
 	cmdErrReader, err := cmd.StderrPipe()
@@ -65,6 +67,7 @@ func Run(command Cmd) error {
 		return err
 	}
 
+	<-stop
 	err = cmd.Wait()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error waiting for command", err)
