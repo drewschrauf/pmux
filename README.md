@@ -12,15 +12,21 @@ With some of the more complex systems I've worked on, I've needed to run up to 8
 
 ### status
 
-  > pmux status
+    > pmux status
 
 Show the git status of all projects in the current workspace.
 
 ### run
 
-  > pmux run [command]
+    > pmux run [command]
 
 Run the command (as defined in the config) against all projects in the current workspace.
+
+### exec
+
+    > pmux exec [command]
+
+Run the given, arbitrary command against all projects in the current workspace.
 
 ## Config
 
