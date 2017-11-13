@@ -73,3 +73,24 @@ func Run(command Cmd) error {
 
 	return nil
 }
+
+// BuildCmdGroups : Convert array of Cmds into ordered command groups
+func BuildCmdGroups(commands []Cmd) [][]Cmd {
+	var processed []string
+	var groups [][]Cmd
+
+	for len(processed) < len(commands) {
+		var group []Cmd
+		var thisProcessed []string
+		for _, cmd := range commands {
+			if !ArrayContains(processed, cmd.Project) && ArrayContainsAll(processed, cmd.Requires) {
+				group = append(group, cmd)
+				thisProcessed = append(thisProcessed, cmd.Project)
+			}
+		}
+		processed = append(processed, thisProcessed...)
+		groups = append(groups, group)
+	}
+
+	return groups
+}

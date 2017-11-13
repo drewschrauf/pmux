@@ -55,7 +55,7 @@ var runCmd = &cobra.Command{
 		if skipRequires {
 			cmdGroups = append(cmdGroups, commands)
 		} else {
-			cmdGroups = buildCmdGroups(commands)
+			cmdGroups = util.BuildCmdGroups(commands)
 		}
 
 		for _, group := range cmdGroups {
@@ -79,24 +79,4 @@ var runCmd = &cobra.Command{
 			wg.Wait()
 		}
 	},
-}
-
-func buildCmdGroups(commands []util.Cmd) [][]util.Cmd {
-	var processed []string
-	var groups [][]util.Cmd
-
-	for len(processed) < len(commands) {
-		var group []util.Cmd
-		var thisProcessed []string
-		for _, cmd := range commands {
-			if !util.ArrayContains(processed, cmd.Project) && util.ArrayContainsAll(processed, cmd.Requires) {
-				group = append(group, cmd)
-				thisProcessed = append(thisProcessed, cmd.Project)
-			}
-		}
-		processed = append(processed, thisProcessed...)
-		groups = append(groups, group)
-	}
-
-	return groups
 }
